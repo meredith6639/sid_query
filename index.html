@@ -10,34 +10,17 @@
     .hidden-block { display: none !important; }
     .container { max-width: 650px; margin: 0 auto; }
 
-    /* ---------- 表格自訂美化樣式 ---------- */
-    /* 1. 表格標題列：背景 rgb(168, 211, 225)、黑色粗體置中 */
+    /* 美化表格樣式 */
     .custom-table th {
       background-color: rgb(168, 211, 225) !important;
       color: black !important;
       font-weight: bold;
       text-align: center;
     }
-    
-    /* 2. 表格內容：文字全部置中 */
-    .custom-table td {
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    /* 3. 交替列底色 (單數列與雙數列) */
-    .custom-table tbody tr:nth-child(odd) td {
-      background-color: rgb(241, 246, 249) !important; /* 單數列 */
-    }
-    .custom-table tbody tr:nth-child(even) td {
-      background-color: rgb(185, 228, 224) !important; /* 雙數列 */
-    }
-
-    /* 代表號指定紫色與粗體 */
-    .text-repno {
-      color: #800080 !important;
-      font-weight: bold;
-    }
+    .custom-table td { text-align: center; vertical-align: middle; }
+    .custom-table tbody tr:nth-child(odd) td { background-color: rgb(241, 246, 249) !important; }
+    .custom-table tbody tr:nth-child(even) td { background-color: rgb(185, 228, 224) !important; }
+    .text-repno { color: #800080 !important; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -63,7 +46,6 @@
   <div class="container bg-white p-4 rounded shadow-sm hidden-block" id="search-section">
     <h3 class="text-center mb-4">學生資料查詢系統</h3>
     
-    <!-- 查詢模式按鈕 -->
     <div class="mb-4 text-center search-buttons">
       <div class="btn-group flex-wrap gap-1" role="group">
         <button type="button" class="btn btn-outline-primary active" id="btn-id" onclick="setSearchType('id')">1. 學生學號</button>
@@ -75,13 +57,11 @@
     </div>
 
     <form id="searchForm" onsubmit="handleSearch(event)">
-      <!-- 模式 1: 學號查詢 -->
       <div id="block-id">
         <label class="form-label text-secondary small">請輸入學號</label>
         <input type="text" class="form-control mb-3" id="val-id" placeholder="例: 11550008">
       </div>
 
-      <!-- 模式 2: 班級+座號 -->
       <div id="block-seat" class="hidden-block">
         <label class="form-label text-secondary small">請輸入班級與座號</label>
         <div class="row mb-3">
@@ -90,13 +70,11 @@
         </div>
       </div>
 
-      <!-- 模式 3: 整班查詢 -->
       <div id="block-class" class="hidden-block">
         <label class="form-label text-secondary small">請輸入班級</label>
         <input type="text" class="form-control mb-3" id="val-class-only" placeholder="班級 (例: 701)">
       </div>
 
-      <!-- 模式 4: 班級+姓名 -->
       <div id="block-name" class="hidden-block">
         <label class="form-label text-secondary small">請輸入班級與姓名</label>
         <div class="row mb-3">
@@ -105,7 +83,6 @@
         </div>
       </div>
 
-      <!-- 模式 5: 僅輸入姓名/姓/名 -->
       <div id="block-onlyname" class="hidden-block">
         <label class="form-label text-secondary small">請輸入姓名、姓氏或名字關鍵字</label>
         <input type="text" class="form-control mb-3" id="val-only-name" placeholder="例: 林 或 禧 或 林禧">
@@ -114,81 +91,65 @@
       <button type="submit" class="btn btn-success w-100" id="searchBtn">開始查詢</button>
     </form>
 
-    <!-- 顯示查詢結果的區塊 -->
     <div id="resultArea" class="mt-4"></div>
   </div>
 
   <script>
-  // ⚠️ 替換為您的 Apps Script 部署 URL
-const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbytJzfqMWaTdmnehCNa_qvGHtpAHNxpUP-h-anPda-xCxG8U-eQF8l_KupakB7kQ_cb/exec';
-let currentSearchType = 'id';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbytJzfqMWaTdmnehCNa_qvGHtpAHNxpUP-h-anPda-xCxG8U-eQF8l_KupakB7kQ_cb/exec';
+    let currentSearchType = 'id';
 
-// 1. 處理教師登入 (向 GAS 驗證 Teachers 工作表)
-async function handleLogin(event) {
-    event.preventDefault();
-    const account = document.getElementById('teacherAccount').value.trim();
-    const password = document.getElementById('teacherPassword').value.trim();
-    const loginBtn = document.getElementById('loginBtn');
-    const loginAlert = document.getElementById('loginAlert');
+    async function handleLogin(event) {
+      event.preventDefault();
+      const account = document.getElementById('teacherAccount').value.trim();
+      const password = document.getElementById('teacherPassword').value.trim();
+      const loginBtn = document.getElementById('loginBtn');
+      const loginAlert = document.getElementById('loginAlert');
 
-    loginBtn.disabled = true;
-    loginBtn.innerText = '登入驗證中...';
-    loginAlert.innerHTML = '';
+      loginBtn.disabled = true;
+      loginBtn.innerText = '登入驗證中...';
+      loginAlert.innerHTML = '';
 
-    try {
+      try {
         const response = await fetch(GAS_API_URL, {
-            method: 'POST',
-            redirect: 'follow', // 必須加入：處理 GAS 的 302 重新導向
-            headers: {
-                'Content-Type': 'text/plain;charset=utf-8'
-            },
-            body: JSON.stringify({action: 'login', account: account, password: password })
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'login', account: account, password: password })
         });
-        
+
         const data = await response.json();
 
         if (data && data.success) {
-            document.getElementById('login-section').classList.add('hidden-block');
-            document.getElementById('search-section').classList.remove('hidden-block');
+          document.getElementById('login-section').classList.add('hidden-block');
+          document.getElementById('search-section').classList.remove('hidden-block');
         } else {
-            loginAlert.innerHTML = `<div class="alert alert-danger">登入失敗：${data.message || '帳號或密碼錯誤'}</div>`;
+          loginAlert.innerHTML = `<div class="alert alert-danger">登入失敗：${data.message || '帳號或密碼錯誤'}</div>`;
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Login Error:', error);
-        loginAlert.innerHTML = `<div class="alert alert-danger">連線錯誤：可能為 Apps Script 發生錯誤或網址無效。(${error.message})</div>`;
-    } finally {
+        loginAlert.innerHTML = '<div class="alert alert-danger">連線伺服器發生錯誤，請重新試一次。</div>';
+      } finally {
         loginBtn.disabled = false;
         loginBtn.innerText = '登入系統';
+      }
     }
-}
 
-    // 2. 切換 5 種查詢模式區塊
     function setSearchType(type) {
       currentSearchType = type;
-      
-      // 隱藏所有輸入區塊
       const blocks = ['block-id', 'block-seat', 'block-class', 'block-name', 'block-onlyname'];
       blocks.forEach(id => document.getElementById(id).classList.add('hidden-block'));
       
-      // 移除按鈕高亮
       const btns = ['btn-id', 'btn-seat', 'btn-class', 'btn-name', 'btn-onlyname'];
       btns.forEach(id => document.getElementById(id).classList.remove('active'));
       
-      // 顯示選中的區塊與高亮按鈕
       document.getElementById('block-' + type).classList.remove('hidden-block');
       document.getElementById('btn-' + type).classList.add('active');
     }
 
-    // 3. 處理學生資料查詢
     async function handleSearch(event) {
       event.preventDefault();
       
-      let queryParams = {
-        action: 'search',
-        type: currentSearchType
-      };
+      let queryParams = { action: 'search', type: currentSearchType };
 
-      // 依據選擇模式打包資料
       if (currentSearchType === 'id') {
         queryParams.id = document.getElementById('val-id').value;
       } else if (currentSearchType === 'seat') {
@@ -219,17 +180,13 @@ async function handleLogin(event) {
 
         const data = await response.json();
 
-        // 渲染查詢結果
         if (data.status === 'error') {
           resultArea.innerHTML = `<div class="alert alert-danger">查詢失敗：${data.message}</div>`;
         } else {
-          let htmlContent = `<div class="alert alert-success">系統回應：${data.message}</div>`;
+          let htmlContent = `<div class="alert alert-success">${data.message}</div>`;
           
-          // 套用您指定的美化表格樣式 (custom-table)
           htmlContent += '<table class="table table-bordered mt-3 custom-table">';
-          htmlContent += '<thead>';
-          htmlContent += '<tr><th>學號</th><th>姓名</th><th>班級</th><th>座號</th><th>代表號</th><th>備註</th></tr>';
-          htmlContent += '</thead><tbody>';
+          htmlContent += '<thead><tr><th>學號</th><th>姓名</th><th>班級</th><th>座號</th><th>代表號</th><th>備註</th></tr></thead><tbody>';
           
           data.data.forEach(function(student) {
             htmlContent += '<tr>';
@@ -237,7 +194,7 @@ async function handleLogin(event) {
             htmlContent += `<td>${student.name}</td>`;
             htmlContent += `<td>${student.className}</td>`;
             htmlContent += `<td>${student.seatNo}</td>`;
-            htmlContent += `<td class="text-repno">${student.repNo}</td>`; // 紫色粗體
+            htmlContent += `<td class="text-repno">${student.repNo}</td>`;
             htmlContent += `<td>${student.remark}</td>`;
             htmlContent += '</tr>';
           });
@@ -247,7 +204,7 @@ async function handleLogin(event) {
         }
       } catch (error) {
         console.error('Search Error:', error);
-        resultArea.innerHTML = '<div class="alert alert-danger">連線發生錯誤，請確認網路或 API 設定。</div>';
+        resultArea.innerHTML = '<div class="alert alert-danger">連線發生錯誤，請確認網路設定。</div>';
       } finally {
         searchBtn.disabled = false;
         searchBtn.innerText = '開始查詢';

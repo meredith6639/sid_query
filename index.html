@@ -119,6 +119,53 @@
   </div>
 
   <script>
+   // 教師登入驗證函式
+async function handleLogin(event) {
+  event.preventDefault(); // 防止表單送出後網頁重新整理
+  
+  const account = document.getElementById('teacherAccount').value.trim();
+  const password = document.getElementById('teacherPassword').value.trim();
+  const loginBtn = document.getElementById('loginBtn');
+  const loginAlert = document.getElementById('loginAlert');
+  
+  // ⚠️ 請確認這是您 Apps Script 部署為 Web App 後取得的 /exec 網址
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbytJzfqMWaTdmnehCNa_qvGHtpAHNxpUP-h-anPda-xCxG8U-eQF8l_KupakB7kQ_cb/exec';
+
+  loginBtn.disabled = true;
+  loginBtn.innerText = '登入驗證中...';
+  loginAlert.innerHTML = '';
+
+  try {
+    const response = await fetch(scriptUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8' // 避免觸發 CORS Preflight 預檢請求
+      },
+      body: JSON.stringify({
+        action: 'login',
+        account: account,
+        password: password
+      })
+    });
+
+    const result = await response.json();
+
+    if (result && result.success) {
+      // 驗證成功：隱藏登入區塊，顯示學生查詢系統
+      document.getElementById('login-section').classList.add('hidden-block');
+      document.getElementById('search-section').classList.remove('hidden-block');
+    } else {
+      // 驗證失敗
+      loginAlert.innerHTML = `<div class="alert alert-danger">登入失敗：${result.error || '帳號或密碼錯誤'}</div>`;
+    }
+  } catch (error) {
+    console.error('Login Error:', error);
+    loginAlert.innerHTML = '<div class="alert alert-danger">連線伺服器發生錯誤，請重新試一次。</div>';
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.innerText = '登入系統';
+  }
+}
     // ⚠️ 請務必確認此處已替換為您在 Apps Script 部署「網頁應用程式」取得的 URL (結尾為 /exec)
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbytJzfqMWaTdmnehCNa_qvGHtpAHNxpUP-h-anPda-xCxG8U-eQF8l_KupakB7kQ_cb/exec';
     

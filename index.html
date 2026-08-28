@@ -95,6 +95,23 @@
     // 替換為你在 Google Apps Script 部署為「網頁應用程式」後取得的 URL
     const GAS_API_URL = 'https://script.google.com/a/macros/thjh.tp.edu.tw/s/AKfycbytJzfqMWaTdmnehCNa_qvGHtpAHNxpUP-h-anPda-xCxG8U-eQF8l_KupakB7kQ_cb/exec;
     let currentSearchType = 'id';
+    function handleLogin(event) {
+    event.preventDefault(); // 防止表單送出後重新整理網頁
+    
+    const account = document.getElementById('teacherAccount').value;
+    const password = document.getElementById('teacherPassword').value;
+
+    // TODO: 請將 'admin' 與 '1234' 替換為您實際要驗證的帳號密碼，或改用 GAS 後端驗證
+    if (account === 'admin' && password === '1234') {
+        // 登入成功：隱藏登入區塊，顯示查詢區塊
+        document.getElementById('login-section').classList.add('hidden-block');
+        document.getElementById('search-section').classList.remove('hidden-block');
+    } else {
+        // 登入失敗
+        alert('帳號或密碼錯誤，請重新輸入！');
+        document.getElementById('teacherPassword').value = ''; // 清空密碼欄位
+    }
+}
 
     function setSearchType(type) {
       currentSearchType = type;

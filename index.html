@@ -28,24 +28,21 @@
     </form>
   </div>
 
-  <!-- 2. 學生資料查詢系統 (預設隱藏) -->
-  <div class="container bg-white p-4 rounded shadow-sm hidden-block" id="search-section">
-    <h3 class="text-center mb-4">學生資料查詢系統</h3>
-    <div class="mb-4 text-center search-buttons">
-      <!-- 這裡保留您原本在 GitHub 上的 btn-group 及所有查詢按鈕與表單內容 -->     
-  <div class="container bg-white p-4 rounded shadow-sm">
+<!-- 2. 學生資料查詢系統 (預設隱藏) -->
+<div class="container bg-white p-4 rounded shadow-sm hidden-block" id="search-section">
     <h3 class="text-center mb-4">學生資料查詢系統</h3>
     
     <div class="mb-4 text-center search-buttons">
-      <div class="btn-group flex-wrap" role="group">
-        <button type="button" class="btn btn-outline-primary active" id="btn-id" onclick="setSearchType('id')">◎ 學生學號</button>
-        <button type="button" class="btn btn-outline-primary" id="btn-seat" onclick="setSearchType('seat')">◎ 班級+座號</button>
-        <button type="button" class="btn btn-outline-primary" id="btn-class" onclick="setSearchType('class')">◎ 整班查詢</button>
-        <button type="button" class="btn btn-outline-primary" id="btn-name" onclick="setSearchType('name')">◎ 班級+姓名</button>
-        <button type="button" class="btn btn-outline-primary" id="btn-onlyname" onclick="setSearchType('onlyname')">◎ 僅輸入姓名</button>
-      </div>
+        <div class="btn-group flex-wrap" role="group">
+            <button type="button" class="btn btn-outline-primary active" id="btn-id" onclick="setSearchType('id')">◎ 學生學號</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-seat" onclick="setSearchType('seat')">◎ 班級+座號</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-class" onclick="setSearchType('class')">◎ 整班查詢</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-name" onclick="setSearchType('name')">◎ 班級+姓名</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-onlyname" onclick="setSearchType('onlyname')">◎ 僅輸入姓名</button>
+        </div>
     </div>
-
+    
+    <!-- 以下保留您原本的 form 表單與 resultArea -->
     <form id="searchForm" onsubmit="handleSearch(event)">
       <!-- 模式 1: 學號查詢 -->
       <div id="block-id">

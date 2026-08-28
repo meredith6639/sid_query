@@ -12,6 +12,22 @@
   </style>
 </head>
 <body>
+    <!-- 1. 教師登入區塊 -->
+    <div class="container" id="login-section">
+      <h3 class="text-center mb-4">教師登入</h3>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="mb-3">
+          <label class="form-label fw-bold">教師帳號</label>
+          <input type="text" class="form-control" id="teacherAccount" placeholder="請輸入帳號" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">密碼</label>
+          <input type="password" class="form-control" id="teacherPassword" placeholder="請輸入密碼" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">登入系統</button>
+      </form>
+    </div>
+  
   <div class="container bg-white p-4 rounded shadow-sm">
     <h3 class="text-center mb-4">學生資料查詢系統</h3>
     
